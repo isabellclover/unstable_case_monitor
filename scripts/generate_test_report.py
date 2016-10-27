@@ -42,11 +42,8 @@ def grab_unstable_case_list(root_path, target_file_path):
     target_file.close()    
 
 def build_html_header():
-    html_txt = '<!DOCTYPE html><html><head><style>'
-    html_txt += 'table {font-family: arial, sans-serif;border-collapse: collapse; width: 100%;}'
-    html_txt += 'td, th {border: 1px solid #dddddd;text-align: left;padding: 8px;}'
-    html_txt += 'tr:nth-child(even) {background-color: #dddddd;}'
-    html_txt += '</style></head><body>'
+    html_txt = '<!DOCTYPE html><html><head>'
+    html_txt += '</head><body>'
     return html_txt
 
 def build_html_foot():
@@ -54,7 +51,7 @@ def build_html_foot():
     return html_txt
 
 def build_table_header(cols):
-    html_txt = '<table><tr>'
+    html_txt = '<table style="border: 1px solid #dddddd;text-align: left;padding: 8px;"><tr style="background-color::#dddddd">'
     for col in cols:
         html_txt += ('<th>'+str(col)+'</th>')
     html_txt += '</tr>'
@@ -66,7 +63,7 @@ def build_table_foot():
 def build_case_row(datas):
     html = '<tr>'
     for data in datas:
-        html += '<td>'+str(data)+'</td>'
+        html += '<td style="text-align:left">'+str(data)+'</td>'
     html += '</tr>'
     return html
 
