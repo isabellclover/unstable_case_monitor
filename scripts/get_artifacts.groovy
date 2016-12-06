@@ -6,9 +6,11 @@ import hudson.Launcher
 import hudson.model.BuildListener
 import hudson.FilePath 
 
-for (subBuild in build.builders) {
-  println(subBuild.jobName + " => " + subBuild.buildNumber)
-  copyTriggeredResults(subBuild.jobName, Integer.toString(subBuild.buildNumber))
+def builders = [88,89,90]
+def jobname = "clean-sweep_develop_tests_local"
+for (subBuild in builders) {
+  println(jobname + " => " + subBuild)
+  copyTriggeredResults(jobname, Integer.toString(subBuild))
 }
 
 def copyTriggeredResults(projName, buildNumber) {
