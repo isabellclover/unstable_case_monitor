@@ -23,7 +23,7 @@ def copyTriggeredResults(projName, buildNumber) {
    
    // CopyArtifact(String projectName, String parameters, BuildSelector selector,
    // String filter, String target, boolean flatten, boolean optional)
-   def copyArtifact = new CopyArtifact(projName, "", selector, targetPath, null, false, true)
+   def copyArtifact = new CopyArtifact(projName, "", selector, "**", targetPath, false, true)
 
    // use reflection because direct call invokes deprecated method
    // perform(Build<?, ?> build, Launcher launcher, BuildListener listener)
