@@ -15,19 +15,21 @@ def doWork() {
 	println 'PathList :' + jobPath
 	for (path in jobPath.split("/n")){
 		println 'path :'+path
-		jobs = Jenkins.getInstance().getItemByFullName(path).getAllJobs()
+		jobs = Jenkins.instance.getAllItems()
 		if(jobs != null){
 			jobs.each { j ->
 			  if (j instanceof com.cloudbees.hudson.plugins.folder.Folder) { return }
-			  println('JOB: ' + j.fullName)
-			  numbuilds = j.builds.size()
-			  if (numbuilds == 0) {
-				println('  -> no build')
-				return
-			  }
-			  j.builds.each{ b ->
-				println(j.Name + " => "+ b.getNumber())
-				copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
+			  if (j.fullName.contains('104-Develop') && j.fullName.contains('1-unit%20test')){
+				  println('JOB: ' + j.fullName)
+				  numbuilds = j.builds.size()
+				  if (numbuilds == 0) {
+					println('  -> no build')
+					return
+				  }
+				  j.builds.each{ b ->
+					println(j.Name + " => "+ b.getNumber())
+					copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
+				  }
 			  }
 			}
 		}
