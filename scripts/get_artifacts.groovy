@@ -15,7 +15,7 @@ def doWork() {
 	println 'PathList :' + jobPath
 	for (path in jobPath.split("/n")){
 		println 'path :'+path
-		jobs = Jenkins.getInstance().getItemByFullName(name).getAllJobs()
+		jobs = Jenkins.getInstance().getItemByFullName(path).getAllJobs()
 		if(jobs != null){
 			jobs.each { j ->
 			  if (j instanceof com.cloudbees.hudson.plugins.folder.Folder) { return }
