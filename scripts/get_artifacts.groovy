@@ -18,7 +18,7 @@ for (subBuild in builders) {
 def copyTriggeredResults(projName, buildNumber) {
    def reportPath = "TestReports"
    def selector = new SpecificBuildSelector(buildNumber)
-   def targetPath = reportPath+ "/"+ projName + "/"+ buildNumber + "/**";
+   def targetPath = reportPath+ "/"+ projName + "/"+ buildNumber ;
    println(targetPath)
    
    // CopyArtifact(String projectName, String parameters, BuildSelector selector,
