@@ -10,8 +10,10 @@ import jenkins.model.Jenkins
 doWork()
 
 def doWork() {
-	String jobPath = new File('/config.ini').getText('UTF-8')
+	String jobPath = new File('config.ini').getText('UTF-8')
+	println 'PathList :' + jobPath
 	for (path in jobPath.split("/n")){
+		println 'path :'+path
 		jobs = Jenkins.getInstance().getItemByFullName(name).getAllJobs()
 		if(jobs != null){
 			jobs.each { j ->
