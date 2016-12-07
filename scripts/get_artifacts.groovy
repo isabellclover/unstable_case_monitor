@@ -14,12 +14,12 @@ def doWork() {
 	jobPath = '104-Develop/1-unit%20test'
 	println 'PathList :' + jobPath
 	for (path in jobPath.split("/n")){
-		println 'path :'+path
 		jobs = Jenkins.instance.getAllItems()
 		if(jobs != null){
 			jobs.each { j ->
 			  if (j instanceof com.cloudbees.hudson.plugins.folder.Folder) { return }
-			  if (j.fullName.contains('104-Develop') && j.fullName.contains('1-unit%20test')){
+			  println j.fullName
+			  if (j.fullName.contains('104-Develop') && j.fullName.contains('1-unit')){
 				  println('JOB: ' + j.fullName)
 				  numbuilds = j.builds.size()
 				  if (numbuilds == 0) {
