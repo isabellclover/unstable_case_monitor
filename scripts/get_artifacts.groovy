@@ -26,7 +26,7 @@ def doWork() {
 			  }
 			  for(b in j.builds){
 				println(j.fullName + " => "+ b.number)
-				copyTriggeredResults(j.Name , Integer.toString(b.number))
+				copyTriggeredResults(j.fullName , Integer.toString(b.number))
 				}
 			  }			
 		}
