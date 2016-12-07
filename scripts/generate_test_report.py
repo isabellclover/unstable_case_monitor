@@ -8,17 +8,27 @@ REGRESSION_TEST_PROJECT = 'regression'
 BRANCH_NAME = 'Develop'
 PRODUCT_NAME = 'Norton Clean'
 CURRENT = os.path.dirname(os.path.abspath(__file__))
-TEMP = os.path.join(CURRENT, 'temp.txt')
+TEMP_PATH = os.path.join(CURRENT, 'Temp')
+BUILD_STAMP = 'BUILD_STAMP'
 
-def grab_unstable_case_list(root_path, target_file_path):
-    target_file = open(target_file_path, 'w')
+def grab_unstable_case_list(root_path, target_file_path):    
     total = 0
     failure = 0
     error = 0
     for root,directories,files in os.walk(root_path):
         for filename in files:
-            if '.xml' in filename:
-                datafile = os.path.join(root,filename)
+            if '.xml' in filename and 'TEST' in filename:
+                print 'Find Test report as' + filename
+                
+                #get job and build information
+                jobinfo = filename.split('/')
+                jobname = jobinfo[1]
+                buildnumber = jobinfo[2]
+                datafile = os.path.join(root,filename)                
+                target_file = open(target_file_path + '/' + jobname, 'a')
+                target_file.write('\n'+BUILD_STAMP+buildnumber)
+                
+                #begin parse TEST.xml
                 tree = ET.parse(datafile)
                 general = tree.getroot()
                 if(general.tag != 'testsuite'):
@@ -26,9 +36,12 @@ def grab_unstable_case_list(root_path, target_file_path):
                 if general==None:
                     continue
                 total += int(general.attrib['tests'])
+
+                #all case passed
                 if general.attrib['failures']=='0' and general.attrib['errors']=='0':
                     print 'all passed, skip'
                     continue
+                #find error/failed case
                 else:
                     failure += int(general.attrib['failures'])
                     error += int(general.attrib['errors'])                    
@@ -38,8 +51,8 @@ def grab_unstable_case_list(root_path, target_file_path):
                     for errorcase in general.findall(".//error/.."):
                         print 'error case:' + errorcase.tag
                         target_file.write(str(failcase.attrib['classname']+'.'+failcase.attrib['name']) + os.linesep)
-    target_file.write('\n'+SUMMARY_TEXT+'Total:'+str(total)+',Failure:'+str(failure)+',Error:'+str(error))
-    target_file.close()    
+            target_file.write('\n'+SUMMARY_TEXT+'Total:'+str(total)+',Failure:'+str(failure)+',Error:'+str(error))
+            target_file.close()    
 
 def build_html_header():
     html_txt = '<!DOCTYPE html><html><head>'
@@ -67,6 +80,10 @@ def build_case_row(datas):
     html += '</tr>'
     return html
 
+def build_bond_text(line):
+    html = '<p><b>'+line+'</b></p>'
+    return html 
+
 def build_title():
     html = '<h1>'
     html += (PRODUCT_NAME+' '+BRANCH_NAME+' '+'Unstable Case')
@@ -74,27 +91,47 @@ def build_title():
     return html
 
 def write_report(source, dest):
-    grab_unstable_case_list(source,TEMP)    
+    # filter data
+    grab_unstable_case_list(source,TEMP)
+    
+    # create html report
     dest_file = open(dest, 'w')    
     dest_file.write(build_html_header())
     dest_file.write(build_title())
-    source_file=open(TEMP, 'r')
-    result={}
-    for casename in source_file:        
-        if not (SUMMARY_TEXT in casename):
-            if casename in result.keys():
-                result[casename]+=1
-            elif len(casename) >= 2:
-                result[casename]=1
-        else:
-            dest_file.write(casename.replace(SUMMARY_TEXT,''))
-    source_file.close()
-    # cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message']
-    cols = ['Case Name','Fail Times']
-    dest_file.write(build_table_header(cols))
-    for key in result.keys():
-        dest_file.write(build_case_row([key,result[key]]))
-    dest_file.write(build_table_foot())
+    
+    # inject tables
+    for root,directories,files in os.walk(TEMP):
+        for filename in files:
+            #write job name
+            jobname = filename[filename.rfind('/'):]            
+            buildnumber = 0
+            source_file=open(filename, 'r')
+            result={}
+           
+
+            #write case table
+            for casename in source_file:
+                if BUILD_STAMP in casename:
+                    buildnumber += 1
+                elif SUMMARY_TEXT in casename:
+                    #dest_file.write(casename.replace(SUMMARY_TEXT,''))
+                    continue
+                else:
+                    if casename in result.keys():
+                        result[casename]+=1
+                    elif len(casename) >= 2:
+                        result[casename]=1
+            source_file.close()
+
+            dest_file.write(build_bond_text('Job '+ jobname+ ' Latest' + str(buildnumber) +'Builds'))
+            # cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message', 'Report Link']
+            cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing Rate']
+            dest_file.write(build_table_header(cols))
+            for key in result.keys():
+                dest_file.write(build_case_row([key,buildnumber, result[key], '0']))
+            dest_file.write(build_table_foot())
+
+    # end the html        
     dest_file.write(build_html_foot())
     dest_file.close()
             

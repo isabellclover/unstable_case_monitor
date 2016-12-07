@@ -11,7 +11,7 @@ doWork()
 
 def doWork() {
 	//String jobPath = new File('config.ini').getText('UTF-8')
-	jobPath = 'antimalware_feature_unit_test,NMS_develop_unit_test,NMS_develop_PSL_unit_test'
+	jobPath = 'antimalware_feature_unit_test,NMS_develop_PSL_unit_test'
 	println 'PathList :' + jobPath
 	for (path in jobPath.split(",")){
 		jobs = Jenkins.instance.getItemByFullName(path)
@@ -39,9 +39,8 @@ def copyTriggeredResults(projName, buildNumber) {
    def targetPath = reportPath+ "/"+ projName + "/"+ buildNumber ;
    println(targetPath)
    
-   // CopyArtifact(String projectName, String parameters, BuildSelector selector,
-   // String filter, String target, boolean flatten, boolean optional)
-   def copyArtifact = new CopyArtifact(projName, "", selector, "**/*.xml", targetPath, false, true)
+   // CopyArtifact(String projectName, String parameters, BuildSelector selector, String filter, String target, boolean flatten, boolean optional)
+   def copyArtifact = new CopyArtifact(projName, "", selector, "**/TEST*.xml", targetPath, false, true)
 
    // use reflection because direct call invokes deprecated method
    // perform(Build<?, ?> build, Launcher launcher, BuildListener listener)
