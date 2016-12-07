@@ -51,7 +51,7 @@ def build_html_foot():
     return html_txt
 
 def build_table_header(cols):
-    html_txt = '<table style="border: 1px solid #dddddd;text-align: left;padding: 8px;"><tr style="background-color::#dddddd">'
+    html_txt = '<table style="border: 1px solid #000000;text-align: left;padding: 8px;"><tr style="background-color:#dddddd">'
     for col in cols:
         html_txt += ('<th>'+str(col)+'</th>')
     html_txt += '</tr>'
@@ -89,6 +89,7 @@ def write_report(source, dest):
         else:
             dest_file.write(casename.replace(SUMMARY_TEXT,''))
     source_file.close()
+    # cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message']
     cols = ['Case Name','Fail Times']
     dest_file.write(build_table_header(cols))
     for key in result.keys():

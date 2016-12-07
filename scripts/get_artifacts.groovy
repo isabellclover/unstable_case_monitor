@@ -5,14 +5,30 @@ import hudson.model.AbstractBuild
 import hudson.Launcher
 import hudson.model.BuildListener
 import hudson.FilePath 
+import jenkins.model.Jenkins
 
-def builders = [88,89,90]
-def jobname = "clean-sweep_develop_tests_local"
+doWork()
 
-
-for (subBuild in builders) {
-  println(jobname + " => " + subBuild)
-  copyTriggeredResults(jobname, Integer.toString(subBuild))
+def doWork() {
+	String jobPath = new File('/config.ini').getText('UTF-8')
+	for (path in jobPath.split("/n")){
+		jobs = Jenkins.getInstance().getItemByFullName(name).getAllJobs()
+		if(jobs != null){
+			jobs.each { j ->
+			  if (j instanceof com.cloudbees.hudson.plugins.folder.Folder) { return }
+			  println 'JOB: ' + j.fullName
+			  numbuilds = j.builds.size()
+			  if (numbuilds == 0) {
+				println '  -> no build'
+				return
+			  }
+			  j.builds.each{ b ->
+				println( j.Name + " => " b.getNumber())
+				copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
+			  }
+			}
+		}
+	}
 }
 
 def copyTriggeredResults(projName, buildNumber) {
@@ -23,7 +39,7 @@ def copyTriggeredResults(projName, buildNumber) {
    
    // CopyArtifact(String projectName, String parameters, BuildSelector selector,
    // String filter, String target, boolean flatten, boolean optional)
-   def copyArtifact = new CopyArtifact(projName, "", selector, "**", targetPath, false, true)
+   def copyArtifact = new CopyArtifact(projName, "", selector, "**/.xml", targetPath, false, true)
 
    // use reflection because direct call invokes deprecated method
    // perform(Build<?, ?> build, Launcher launcher, BuildListener listener)
