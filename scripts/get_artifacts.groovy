@@ -22,8 +22,8 @@ def doWork() {
 				println('  -> no build')
 				return
 			  }
-			  for( b in j.builds){
-				println(j.Name + " => " b.getNumber())
+			  j.builds.each{ b ->
+				println(j.Name + " => "+ b.getNumber())
 				copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
 			  }
 			}
