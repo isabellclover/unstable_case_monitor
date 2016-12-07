@@ -16,14 +16,14 @@ def doWork() {
 		if(jobs != null){
 			jobs.each { j ->
 			  if (j instanceof com.cloudbees.hudson.plugins.folder.Folder) { return }
-			  println 'JOB: ' + j.fullName
+			  println('JOB: ' + j.fullName)
 			  numbuilds = j.builds.size()
 			  if (numbuilds == 0) {
-				println '  -> no build'
+				println('  -> no build')
 				return
 			  }
-			  j.builds.each{ b ->
-				println( j.Name + " => " b.getNumber())
+			  for( b in j.builds){
+				println(j.Name + " => " b.getNumber())
 				copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
 			  }
 			}
