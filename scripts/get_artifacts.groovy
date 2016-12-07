@@ -11,27 +11,24 @@ doWork()
 
 def doWork() {
 	//String jobPath = new File('config.ini').getText('UTF-8')
-	jobPath = '104-Develop/1-unit%20test'
+	jobPath = 'antimalware_feature_unit_test,NMS_develop_unit_test,NMS_develop_PSL_unit_test'
 	println 'PathList :' + jobPath
-	for (path in jobPath.split("/n")){
-		jobs = Jenkins.instance.getAllItems()
+	for (path in jobPath.split(",")){
+		jobs = Jenkins.instance.getItemByFullName(path)
 		if(jobs != null){
 			jobs.each { j ->
 			  if (j instanceof com.cloudbees.hudson.plugins.folder.Folder) { return }
-			  println j.fullName
-			  if (j.fullName.contains('104-Develop') && j.fullName.contains('1-unit')){
-				  println('JOB: ' + j.fullName)
-				  numbuilds = j.builds.size()
-				  if (numbuilds == 0) {
-					println('  -> no build')
-					return
-				  }
-				  j.builds.each{ b ->
-					println(j.Name + " => "+ b.getNumber())
-					copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
-				  }
+			  println('JOB: ' + j.fullName)
+			  numbuilds = j.builds.size()
+			  if (numbuilds == 0) {
+				println('  -> no build')
+				return
 			  }
-			}
+			  j.builds.each{ b ->
+				println(j.Name + " => "+ b.getNumber())
+				copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
+			  }
+			  }			
 		}
 	}
 }
