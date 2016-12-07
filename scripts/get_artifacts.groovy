@@ -11,7 +11,7 @@ doWork()
 
 def doWork() {
 	//String jobPath = new File('config.ini').getText('UTF-8')
-	jobPath = '104-Develop/view/1-unit%20test'
+	jobPath = '104-Develop/1-unit%20test'
 	println 'PathList :' + jobPath
 	for (path in jobPath.split("/n")){
 		println 'path :'+path
