@@ -24,10 +24,10 @@ def doWork() {
 				println('  -> no build')
 				return
 			  }
-			  j.builds.each{ b ->
-				println(j.Name + " => "+ b.getNumber())
-				copyTriggeredResults(j.Name , Integer.toString(b.getNumber()))
-			  }
+			  for(b in j.builds){
+				println(j.fullName + " => "+ b.number)
+				copyTriggeredResults(j.Name , Integer.toString(b.number))
+				}
 			  }			
 		}
 	}
