@@ -10,7 +10,8 @@ import jenkins.model.Jenkins
 doWork()
 
 def doWork() {
-	String jobPath = new File('config.ini').getText('UTF-8')
+	//String jobPath = new File('config.ini').getText('UTF-8')
+	jobPath = 'view/104-Develop/view/1-unit%20test'
 	println 'PathList :' + jobPath
 	for (path in jobPath.split("/n")){
 		println 'path :'+path
