@@ -15,17 +15,18 @@ def grab_unstable_case_list(root_path, target_file_path):
     total = 0
     failure = 0
     error = 0
+    os.mkdir(TEMP_PATH)
     for root,directories,files in os.walk(root_path):
         for filename in files:
             if '.xml' in filename and 'TEST' in filename:
                 print 'Find Test report as' + filename
-                
+                print root
                 #get job and build information
-                jobinfo = filename.split('/')
+                jobinfo = root[root.find('TestReports'):].split(os.sep)
                 jobname = jobinfo[1]
                 buildnumber = jobinfo[2]
                 datafile = os.path.join(root,filename)                
-                target_file = open(target_file_path + '/' + jobname, 'a')
+                target_file = open(target_file_path + os.sep + jobname, 'a')
                 target_file.write('\n'+BUILD_STAMP+buildnumber)
                 
                 #begin parse TEST.xml
@@ -51,8 +52,8 @@ def grab_unstable_case_list(root_path, target_file_path):
                     for errorcase in general.findall(".//error/.."):
                         print 'error case:' + errorcase.tag
                         target_file.write(str(failcase.attrib['classname']+'.'+failcase.attrib['name']) + os.linesep)
-            target_file.write('\n'+SUMMARY_TEXT+'Total:'+str(total)+',Failure:'+str(failure)+',Error:'+str(error))
-            target_file.close()    
+                target_file.write('\n'+SUMMARY_TEXT+'Total:'+str(total)+',Failure:'+str(failure)+',Error:'+str(error))
+                target_file.close()    
 
 def build_html_header():
     html_txt = '<!DOCTYPE html><html><head>'
@@ -92,7 +93,7 @@ def build_title():
 
 def write_report(source, dest):
     # filter data
-    grab_unstable_case_list(source,TEMP)
+    grab_unstable_case_list(source,TEMP_PATH)
     
     # create html report
     dest_file = open(dest, 'w')    
@@ -100,7 +101,7 @@ def write_report(source, dest):
     dest_file.write(build_title())
     
     # inject tables
-    for root,directories,files in os.walk(TEMP):
+    for root,directories,files in os.walk(TEMP_PATH):
         for filename in files:
             #write job name
             jobname = filename[filename.rfind('/'):]            
