@@ -102,13 +102,10 @@ def write_report(source, dest):
     
     # inject tables
     for root,directories,files in os.walk(TEMP_PATH):
-        for filename in files:
-            #write job name
-            jobname = filename[filename.rfind('/'):]            
+        for filename in files:                              
             buildnumber = 0
-            source_file=open(filename, 'r')
-            result={}
-           
+            source_file=open(os.path.join(root,filename), 'r')
+            result={}           
 
             #write case table
             for casename in source_file:
@@ -123,9 +120,11 @@ def write_report(source, dest):
                     elif len(casename) >= 2:
                         result[casename]=1
             source_file.close()
+            
+            #write job name
+            dest_file.write(build_bond_text('Job '+ filename+ ' Latest' + str(buildnumber) +'Builds'))
 
-            dest_file.write(build_bond_text('Job '+ jobname+ ' Latest' + str(buildnumber) +'Builds'))
-            # cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message', 'Report Link']
+            #cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message', 'Report Link']
             cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing Rate']
             dest_file.write(build_table_header(cols))
             for key in result.keys():
