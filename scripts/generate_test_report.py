@@ -123,7 +123,7 @@ def write_report(source, dest):
             
             #write job name
             dest_file.write(build_bond_text('Job['+ filename+ '] Latest [' + str(buildnumber) +']Builds'))
-            if result.size() == 0:
+            if len(result) == 0:
                 continue
             #cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message', 'Report Link']
             cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing Rate']
