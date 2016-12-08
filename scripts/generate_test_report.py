@@ -27,7 +27,7 @@ def grab_unstable_case_list(root_path, target_file_path):
                 buildnumber = jobinfo[2]
                 datafile = os.path.join(root,filename)                
                 target_file = open(target_file_path + os.sep + jobname, 'a')
-                target_file.write('\n'+BUILD_STAMP+buildnumber)
+                target_file.write('\n'+BUILD_STAMP+buildnumber+'\n')
                 
                 #begin parse TEST.xml
                 tree = ET.parse(datafile)
@@ -122,8 +122,9 @@ def write_report(source, dest):
             source_file.close()
             
             #write job name
-            dest_file.write(build_bond_text('Job '+ filename+ ' Latest' + str(buildnumber) +'Builds'))
-
+            dest_file.write(build_bond_text('Job['+ filename+ '] Latest [' + str(buildnumber) +']Builds'))
+            if result.size() == 0:
+                continue
             #cols = ['Package Name','Case Name', 'Failing Rate', 'Still Fail in latest 5 builds', 'Latest Message', 'Report Link']
             cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing Rate']
             dest_file.write(build_table_header(cols))
