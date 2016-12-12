@@ -132,7 +132,7 @@ def write_report(source, dest):
             cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing Rate']
             dest_file.write(build_table_header(cols))
             for key in result.keys():
-                dest_file.write(build_case_row([key,buildnumber, result[key], '0']))
+                dest_file.write(build_case_row([key,buildnumber, result[key], str(result[key]/buildnumber*100)+'%']))
             dest_file.write(build_table_foot())
 
     # end the html        

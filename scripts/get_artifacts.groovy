@@ -11,7 +11,7 @@ doWork()
 
 def doWork() {
 	//String jobPath = new File('config.ini').getText('UTF-8')
-	jobPath = getJobNamesFromArg()
+	jobPath = getJobNameFromEnv()
 	println 'PathList :' + jobPath
 	for (path in jobPath.split(",")){
 		jobs = Jenkins.instance.getItemByFullName(path)
@@ -38,6 +38,11 @@ def getJobNamesFromArg(){
 	for (a in this.args){
 		jobNames = jobNames + a + ','
 	}
+	return jobNames
+}
+
+def getJobNameFromEnv(){
+	return System.getenv("TARGET_LIST")
 }
 
 def copyTriggeredResults(projName, buildNumber) {
