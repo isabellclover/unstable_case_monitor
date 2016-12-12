@@ -83,7 +83,10 @@ def build_case_row(datas):
 
 def build_bond_text(line):
     html = '<p><b>'+line+'</b></p>'
-    return html 
+    return html
+
+def build_normal_text(line):
+    return '<p>'+line+'</p>'
 
 def build_title():
     html = '<h1>'

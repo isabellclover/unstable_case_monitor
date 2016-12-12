@@ -11,7 +11,7 @@ doWork()
 
 def doWork() {
 	//String jobPath = new File('config.ini').getText('UTF-8')
-	jobPath = 'antimalware_feature_unit_test,NMS_develop_PSL_unit_test'
+	jobPath = getJobNamesFromArg()
 	println 'PathList :' + jobPath
 	for (path in jobPath.split(",")){
 		jobs = Jenkins.instance.getItemByFullName(path)
@@ -30,6 +30,13 @@ def doWork() {
 				}
 			  }			
 		}
+	}
+}
+
+def getJobNamesFromArg(){
+	jobNames = ''
+	for (a in this.args){
+		jobNames = jobNames + a + ','
 	}
 }
 
