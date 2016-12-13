@@ -43,7 +43,8 @@ def write_report(source, dest):
                     if casename in result.keys():
                         case_info = result[casename]
                         case_info[0] += 1
-                        case_info[1] = current
+                        if(current >= case_info[1]):
+                            case_info[1] = current
                     elif len(casename) >= 2:
                         case_info = [1, current, False]                    
                         result[casename] = case_info   
