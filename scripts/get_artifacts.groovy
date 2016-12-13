@@ -28,13 +28,26 @@ def doWork() {
 				println('  -> no build')
 				return
 			  }
-			  for(b in j.builds){
+			  topBuilds = getTopBuilds(j.builds)
+			  for(b in topBuilds){
 				println(j.fullName + " => "+ b.number)
 				copyTriggeredResults(j.fullName , Integer.toString(b.number))
 				}
 			  }			
 		}
 	}
+}
+
+def getTopBuilds(job){
+	realCount = getBuildLimitFromEnv()
+	//default value is 5
+	if(realCount == null){
+		realCount = 5
+	}
+	if(job.builds.size() <= realCount){
+		realCount = job.builds.size()
+	}
+	return job.builds.limit(realCount)
 }
 
 def getJobNamesFromArg(){
@@ -46,8 +59,12 @@ def getJobNamesFromArg(){
 }
 
 def getJobNameFromEnv(){
-	build.getEnvironment(listener).get('TARGET_LIST')
+	return build.getEnvironment(listener).get('TARGET_LIST')
 	//return System.getenv("TARGET_LIST")
+}
+
+def getBuildLimitFromEnv(){
+	return build.getEnvironment(listener).get('BUILD_LIMIT')
 }
 
 def copyTriggeredResults(projName, buildNumber) {
