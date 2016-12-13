@@ -3,6 +3,7 @@ import os
 
 def build_html_header():
     html_txt = '<!DOCTYPE html><html><head>'
+    html_txt += '<style>table, th, td {border: 1px solid black;border-collapse: collapse;}</style>'
     html_txt += '</head><body>'
     return html_txt
 
@@ -11,7 +12,7 @@ def build_html_foot():
     return html_txt
 
 def build_table_header(cols):
-    html_txt = '<table style="border: 1px solid #000000;text-align: left;padding: 8px;"><tr style="background-color:#dddddd">'
+    html_txt = '<table style="border: 1px solid black;text-align: left;padding: 8px;"><tr style="background-color:#dddddd">'
     for col in cols:
         html_txt += ('<th>'+str(col)+'</th>')
     html_txt += '</tr>'
@@ -43,5 +44,5 @@ def build_title(product, branch):
 def build_link_text(link_text, url):
     html = '<u><a href=\"'
     html += url
-    html += ('\">' + link_text + '</a></u>')
+    html += ('>' + link_text + '</a></u>')
     return html 
