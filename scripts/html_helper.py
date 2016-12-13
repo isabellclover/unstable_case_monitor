@@ -43,5 +43,5 @@ def build_title(product, branch):
 def build_link_text(link_text, url):
     html = '<u><a href=\"'
     html += url
-    html += ('>' + link_text + '</a></u>')
+    html += ('">' + link_text + '</a></u>')
     return html 
