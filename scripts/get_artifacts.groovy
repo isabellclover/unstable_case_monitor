@@ -28,7 +28,7 @@ def doWork() {
 				println('  -> no build')
 				return
 			  }
-			  topBuilds = getTopBuilds(j.builds)
+			  topBuilds = getTopBuilds(j)
 			  for(b in topBuilds){
 				println(j.fullName + " => "+ b.number)
 				copyTriggeredResults(j.fullName , Integer.toString(b.number))
