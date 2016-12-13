@@ -11,7 +11,7 @@ def build_html_foot():
     return html_txt
 
 def build_table_header(cols):
-    html_txt = '<table class="pane sortable bigtable stripped"><tr class="pane-header">'
+    html_txt = '<table style="border-width: 1px; border: 1px solid black;"><tr style="background-color: #f1f1c1;">'
     for col in cols:
         html_txt += ('<th>'+str(col)+'</th>')
     html_txt += '</tr>'
@@ -23,7 +23,7 @@ def build_table_foot():
 def build_case_row(datas):
     html = '<tr>'
     for data in datas:
-        html += '<td class="pane no-wrap">'+str(data)+'</td>'
+        html += '<td>'+str(data)+'</td>'
     html += '</tr>'
     return html
 
