@@ -7,7 +7,6 @@ FINAL_REPORT = 'final_report.html'
 BRANCH_NAME = 'Develop'
 PRODUCT_NAME = 'Norton Clean'
 JOB_PATH_NAME = 'http://nortonmobile.usccqa.qalabs.symantec.com/jenkins/job/'
-
 def write_report(source, dest):
     # filter data
     grab_unstable_case_list(source,TEMP_PATH)
@@ -21,8 +20,7 @@ def write_report(source, dest):
     for root,directories,files in os.walk(TEMP_PATH):
         # one file for one job
         for filename in files:                              
-            total_builds = 0
-            max_build = 0
+            all_builds = []
             current = 0
             source_file=open(os.path.join(root,filename), 'r')
             #final case map
@@ -30,11 +28,10 @@ def write_report(source, dest):
 
             #write case table
             for casename in source_file:                
-                if BUILD_STAMP in casename:
-                    total_builds += 1
+                if BUILD_STAMP in casename:                    
                     current = int(casename[casename.find(BUILD_STAMP)+11:])
-                    if current >= max_build:
-                        max_build = current
+                    if not (current in all_builds):
+                        all_builds.append(current)
                 elif SUMMARY_TEXT in casename:
                     #dest_file.write(casename.replace(SUMMARY_TEXT,''))
                     continue
@@ -51,7 +48,7 @@ def write_report(source, dest):
             source_file.close()
             
             #write job name
-            dest_file.write(build_bond_text('Job['+ filename+ '] Latest [' + str(total_builds) +']Builds'))
+            dest_file.write(build_bond_text('Job['+ filename+ '] Latest [' + str(len(all_builds)) +']Builds'))
             dest_file.write(build_normal_text(build_link_text('Job Test Analysis Report', JOB_PATH_NAME+filename+'/test_results_analyzer')))
             
             #no error case
@@ -65,10 +62,10 @@ def write_report(source, dest):
 
             #write table data
             for key in result.keys():
-                case_info = result[key]
-                if max_build <= case_info[1]:
+                case_info = result[key]                
+                if max(all_builds) <= case_info[1]:
                     case_info[2] = True
-                failing_rate = int(case_info[0])*100/total_builds
+                failing_rate = int(case_info[0])*100/len(all_builds)
                 latest_failing = 'Unknown'
                 if(case_info[2]):
                     latest_failing = 'Yes / Build '+str(case_info[1])
