@@ -71,7 +71,7 @@ def write_report(source, dest):
                     latest_failing = 'Yes / Build '+str(case_info[1])
                 else:
                     latest_failing = 'No'
-                dest_file.write(build_case_row([key, total_builds, case_info[0], str(failing_rate)+'%', latest_failing]))
+                dest_file.write(build_case_row([key, len(all_builds), case_info[0], str(failing_rate)+'%', latest_failing]))
             dest_file.write(build_table_foot())
 
     # end the html        
