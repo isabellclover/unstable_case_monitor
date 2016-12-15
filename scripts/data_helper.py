@@ -1,10 +1,12 @@
 import xml.etree.ElementTree as ET
 import os
+from html_helper import *
 
 SUMMARY_TEXT = 'summary_text'
 BUILD_STAMP = 'BUILD_STAMP'
 CURRENT = os.path.dirname(os.path.abspath(__file__))
 TEMP_PATH = os.path.join(CURRENT, 'Temp')
+JOB_PATH_NAME = 'http://nortonmobile.usccqa.qalabs.symantec.com/jenkins/job/'
 
 def grab_unstable_case_list(root_path, target_file_path):    
     total = 0
@@ -52,4 +54,44 @@ def grab_unstable_case_list(root_path, target_file_path):
                 target_file.write('\n'+SUMMARY_TEXT+'Total:'+str(total)+',Failure:'+str(failure)+',Error:'+str(error))
                 target_file.close()
 
-   
+# returns as data{casename: case_info[total_builds, fail_builds, failing_rate, is_latest_failing, failing_link]}
+def rebuild_res_list(result, all_builds, job_name):
+    data = {}
+    for key in result.keys():
+        #init final item
+        data_key = key
+        data_info = [0,0,0,False,'']
+        
+        #get source data
+        case_info = result[key]
+        latest_failed_build = case_info[1]
+        if max(all_builds) <= latest_failed_build:
+            case_info[2] = True            
+        failing_rate = int(case_info[0])*100/len(all_builds)
+        latest_failed_text = 'Unknown'
+        if(case_info[2]):
+            build_link = build_link_text('Build '+str(latest_failed_build), JOB_PATH_NAME+job_name+'/'+str(latest_failed_build)+'/testReport')
+            latest_failed_text = 'Yes / '+ build_link
+        else:
+            latest_failed_text = 'No'
+
+        #buid final item
+        data_info[0] = len(all_builds) #total executed builds
+        data_info[1] = case_info[0] #total failed builds
+        data_info[2] = failing_rate # failing rate
+        data_info[3] = case_info[2] # is still failing
+        data_info[4] = latest_failed_text # txt info
+        data[data_key] = data_info
+        
+    return data
+        
+def split_res_list(source, is_failing):
+    res = {}
+    for key in source.keys():
+        case_info = source[key]
+        if case_info[3] == is_failing:
+            res[key] = case_info
+    return res
+
+def sort_res_list_by_rating(source):
+    pass

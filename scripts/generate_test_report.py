@@ -4,9 +4,9 @@ from data_helper import *
 
 SUMMARY_TEXT = 'summary_text'
 FINAL_REPORT = 'final_report.html'
-BRANCH_NAME = 'Develop'
-PRODUCT_NAME = 'Norton Clean'
-JOB_PATH_NAME = 'http://nortonmobile.usccqa.qalabs.symantec.com/jenkins/job/'
+BRANCH_NAME = 'Product'
+PRODUCT_NAME = 'Norton Mobile'
+
 def write_report(source, dest):
     # filter data
     grab_unstable_case_list(source,TEMP_PATH)
@@ -57,21 +57,23 @@ def write_report(source, dest):
                 continue
             
             #write table cols
-            cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing(%)','Fail in Latest Build']
-            dest_file.write(build_table_header(cols))
+            cols = ['Case Name','Total Builds', 'Failed Builds', 'Failing(%)','Fail in Latest Build']            
 
             #write table data
-            for key in result.keys():
-                case_info = result[key]                
-                if max(all_builds) <= case_info[1]:
-                    case_info[2] = True
-                failing_rate = int(case_info[0])*100/len(all_builds)
-                latest_failing = 'Unknown'
-                if(case_info[2]):
-                    latest_failing = 'Yes / Build '+str(case_info[1])
-                else:
-                    latest_failing = 'No'
-                dest_file.write(build_case_row([key, len(all_builds), case_info[0], str(failing_rate)+'%', latest_failing]))
+            failing_list = rebuild_res_list(result, all_builds, filename)
+            #failing_list = split_res_list(data_source, True)
+            #fixed_list = split_res_list(data_source, False)
+
+            dest_file.write(build_table_header(cols))
+            for case in failing_list.keys():
+                info = failing_list[case]
+                dest_file.write(build_case_row([case, info[0], info[1], str(info[2])+'%',info[4]]))
+
+            #dest_file.write(build_row_header(cols))
+            #for case in failing_list.keys():
+            #    info = failing_list[case]
+            #    dest_file.write(build_case_row([case, info[0], info[1], str(info[2])+'%',info[4]]))
+                
             dest_file.write(build_table_foot())
 
     # end the html        

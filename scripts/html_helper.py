@@ -17,6 +17,13 @@ def build_table_header(cols):
     html_txt += '</tr>'
     return html_txt
 
+def build_row_header(cols):
+    html_txt = '<tr style="background-color: #f1f1c1;">'
+    for col in cols:
+        html_txt += ('<th>'+str(col)+'</th>')
+    html_txt += '</tr>'
+    return html_txt
+
 def build_table_foot():
     return '</table>'
 
